@@ -1,0 +1,241 @@
+<!doctype html>
+<html lang="ru" data-bs-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#2a2e35">
+  <title>Кабинет организатора — CampusEvents</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><rect width='16' height='16' rx='4' fill='%233b6fd8'/><text x='8' y='12' font-size='10' text-anchor='middle' fill='white'>C</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+  <link href="css/styles.css" rel="stylesheet">
+</head>
+<body>
+  <div id="appHeader"></div>
+
+  <main>
+    <header class="page-header py-4 mb-4">
+      <div class="container d-flex flex-wrap justify-content-between align-items-center gap-3">
+        <div>
+          <h1 class="h2 fw-bold mb-1">Кабинет организатора</h1>
+          <p class="text-body-secondary mb-0">Мероприятия, регистрации и вход по QR-кодам</p>
+        </div>
+        <div class="d-flex gap-2">
+          <button class="btn btn-outline-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#checkinPanel" aria-controls="checkinPanel">
+            <i class="bi bi-qr-code-scan me-1"></i>Сканер входа
+          </button>
+          <button class="btn btn-primary" type="button" id="createEventBtn"><i class="bi bi-plus-lg me-1"></i>Создать</button>
+        </div>
+      </div>
+    </header>
+
+    <div class="container">
+      <div class="row g-3 mb-4" id="statsRow"></div>
+
+      <section class="card info-card shadow-sm" aria-labelledby="myEventsTitle">
+        <div class="card-body p-0">
+          <div class="d-flex justify-content-between align-items-center p-3 p-md-4 pb-md-3">
+            <h2 class="h5 fw-bold mb-0" id="myEventsTitle">Мои мероприятия</h2>
+            <div class="btn-group btn-group-sm" role="group" aria-label="Фильтр мероприятий">
+              <input type="radio" class="btn-check" name="eventsScope" id="scopeUpcoming" value="upcoming" checked>
+              <label class="btn btn-outline-primary" for="scopeUpcoming">Предстоящие</label>
+              <input type="radio" class="btn-check" name="eventsScope" id="scopePast" value="past">
+              <label class="btn btn-outline-primary" for="scopePast">Прошедшие</label>
+            </div>
+          </div>
+          <div class="table-responsive">
+            <table class="table table-hover table-events mb-0">
+              <thead class="table-light">
+                <tr>
+                  <th scope="col" class="ps-4">Мероприятие</th>
+                  <th scope="col" class="d-none d-md-table-cell">Дата</th>
+                  <th scope="col">Заполненность</th>
+                  <th scope="col" class="d-none d-lg-table-cell text-center">Очередь</th>
+                  <th scope="col" class="d-none d-lg-table-cell text-center">Пришли</th>
+                  <th scope="col" class="d-none d-lg-table-cell text-center">Рейтинг</th>
+                  <th scope="col" class="text-end pe-4"><span class="visually-hidden">Действия</span></th>
+                </tr>
+              </thead>
+              <tbody id="eventsTable">
+                <tr><td colspan="7" class="text-center py-4"><span class="spinner-border spinner-border-sm"></span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <!-- Участники -->
+  <div class="modal fade" id="participantsModal" tabindex="-1" aria-labelledby="participantsTitle" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-scrollable modal-fullscreen-md-down">
+      <div class="modal-content border-0 rounded-4">
+        <div class="modal-header">
+          <div>
+            <h2 class="modal-title h5 fw-bold" id="participantsTitle">Участники</h2>
+            <div class="small text-body-secondary" id="participantsSubtitle"></div>
+          </div>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+        </div>
+        <div class="modal-body">
+          <div class="row g-2 mb-3">
+            <div class="col-md-6">
+              <label class="visually-hidden" for="participantsSearch">Поиск участника</label>
+              <input class="form-control" type="search" id="participantsSearch" placeholder="Поиск по имени, email, группе">
+            </div>
+            <div class="col-md-6 d-flex gap-2 flex-wrap" id="participantsFilters"></div>
+          </div>
+          <div class="table-responsive">
+            <table class="table align-middle">
+              <thead class="table-light">
+                <tr>
+                  <th scope="col">Участник</th>
+                  <th scope="col" class="d-none d-md-table-cell">Группа</th>
+                  <th scope="col">Статус</th>
+                  <th scope="col" class="d-none d-md-table-cell">Регистрация</th>
+                  <th scope="col" class="text-end"><span class="visually-hidden">Действия</span></th>
+                </tr>
+              </thead>
+              <tbody id="participantsTable"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Создание / редактирование -->
+  <div class="modal fade" id="eventFormModal" tabindex="-1" aria-labelledby="eventFormTitle" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable modal-fullscreen-md-down">
+      <form class="modal-content border-0 rounded-4" id="eventForm" novalidate>
+        <div class="modal-header">
+          <h2 class="modal-title h5 fw-bold" id="eventFormTitle">Новое мероприятие</h2>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+        </div>
+        <div class="modal-body">
+          <div class="alert alert-danger d-none small" id="eventFormError" role="alert"></div>
+          <div class="row g-3">
+            <div class="col-12">
+              <label class="form-label" for="fTitle">Название</label>
+              <input class="form-control" id="fTitle" name="title" required minlength="3" maxlength="200">
+              <div class="invalid-feedback">Минимум 3 символа</div>
+            </div>
+            <div class="col-12">
+              <label class="form-label" for="fShort">Краткое описание</label>
+              <input class="form-control" id="fShort" name="short_description" required minlength="3" maxlength="300">
+              <div class="invalid-feedback">Обязательное поле</div>
+            </div>
+            <div class="col-12">
+              <label class="form-label" for="fDesc">Подробное описание</label>
+              <textarea class="form-control" id="fDesc" name="description" rows="4" required minlength="3"></textarea>
+              <div class="invalid-feedback">Обязательное поле</div>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label" for="fCategory">Категория</label>
+              <select class="form-select" id="fCategory" name="category_id" required></select>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label" for="fFaculty">Институт</label>
+              <select class="form-select" id="fFaculty" name="faculty_id"><option value="">Общеуниверситетское</option></select>
+            </div>
+            <div class="col-md-8">
+              <label class="form-label" for="fVenue">Место проведения</label>
+              <select class="form-select" id="fVenue" name="venue_id" required></select>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label" for="fCapacity">Лимит участников</label>
+              <input class="form-control" type="number" id="fCapacity" name="capacity" min="1" max="10000" required>
+              <div class="invalid-feedback">От 1 до 10 000</div>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label" for="fStart">Начало</label>
+              <input class="form-control" type="datetime-local" id="fStart" name="start_at" required>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label" for="fEnd">Окончание</label>
+              <input class="form-control" type="datetime-local" id="fEnd" name="end_at" required>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label" for="fDeadline">Регистрация до</label>
+              <input class="form-control" type="datetime-local" id="fDeadline" name="registration_deadline">
+            </div>
+            <div class="col-12">
+              <label class="form-label" for="fTags">Теги <span class="text-body-secondary small">(через запятую)</span></label>
+              <input class="form-control" id="fTags" name="tags" placeholder="it, карьера, нетворкинг">
+            </div>
+            <div class="col-12">
+              <div class="d-flex justify-content-between align-items-center mb-2">
+                <span class="form-label mb-0">Программа</span>
+                <button class="btn btn-sm btn-light" type="button" id="addProgramItem"><i class="bi bi-plus-lg me-1"></i>Пункт</button>
+              </div>
+              <div class="vstack gap-2" id="programItems"></div>
+            </div>
+            <div class="col-12">
+              <div class="form-check form-switch">
+                <input class="form-check-input" type="checkbox" role="switch" id="fPublish" name="publish" checked>
+                <label class="form-check-label" for="fPublish">Опубликовать сразу</label>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-light" type="button" data-bs-dismiss="modal">Отмена</button>
+          <button class="btn btn-primary" type="submit" id="eventFormSubmit">Сохранить</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Подтверждение отмены мероприятия -->
+  <div class="modal fade" id="cancelEventModal" tabindex="-1" aria-labelledby="cancelEventTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-sm">
+      <div class="modal-content border-0 rounded-4">
+        <div class="modal-body p-4 text-center">
+          <i class="bi bi-x-octagon fs-1 text-danger"></i>
+          <h2 class="h5 mt-2" id="cancelEventTitle">Отменить мероприятие?</h2>
+          <p class="small text-body-secondary mb-3">Все участники и люди из листа ожидания получат уведомление. Действие нельзя отменить.</p>
+          <div class="d-grid gap-2">
+            <button class="btn btn-danger" type="button" id="confirmCancelEventBtn">Да, отменить</button>
+            <button class="btn btn-light" type="button" data-bs-dismiss="modal">Не отменять</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Сканер входа -->
+  <div class="offcanvas offcanvas-end" tabindex="-1" id="checkinPanel" aria-labelledby="checkinTitle">
+    <div class="offcanvas-header border-bottom">
+      <h2 class="offcanvas-title h5" id="checkinTitle"><i class="bi bi-qr-code-scan me-2"></i>Подтверждение входа</h2>
+      <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Закрыть"></button>
+    </div>
+    <div class="offcanvas-body">
+      <form id="checkinForm" novalidate>
+        <div class="mb-3">
+          <label class="form-label" for="checkinEvent">Мероприятие</label>
+          <select class="form-select" id="checkinEvent" name="event_id"><option value="">Любое из моих</option></select>
+        </div>
+        <div class="mb-3">
+          <button class="btn btn-outline-primary w-100 mb-2" type="button" id="startCameraBtn"><i class="bi bi-camera me-1"></i>Сканировать камерой</button>
+          <video id="qrVideo" class="d-none" playsinline muted></video>
+        </div>
+        <div class="mb-3">
+          <label class="form-label" for="checkinToken">Код с QR (или вставьте вручную)</label>
+          <input class="form-control font-monospace" id="checkinToken" name="qr_token" required minlength="8" autocomplete="off">
+          <div class="invalid-feedback">Введите код</div>
+        </div>
+        <button class="btn btn-primary w-100" type="submit"><i class="bi bi-check2-circle me-1"></i>Подтвердить вход</button>
+      </form>
+      <div class="mt-3" id="checkinResult" aria-live="polite"></div>
+    </div>
+  </div>
+
+  <div id="appFooter"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script type="module" src="js/pages/organizer.js"></script>
+</body>
+</html>
