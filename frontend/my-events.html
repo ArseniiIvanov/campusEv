@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="ru" data-bs-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#2a2e35">
+  <title>Мои мероприятия — CampusEvents</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><rect width='16' height='16' rx='4' fill='%233b6fd8'/><text x='8' y='12' font-size='10' text-anchor='middle' fill='white'>C</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+  <link href="css/styles.css" rel="stylesheet">
+</head>
+<body>
+  <div id="appHeader"></div>
+
+  <main>
+    <header class="page-header py-4 mb-4">
+      <div class="container">
+        <div class="d-flex flex-wrap justify-content-between align-items-center gap-3">
+          <div>
+            <h1 class="h2 fw-bold mb-1">Мои мероприятия</h1>
+            <p class="text-body-secondary mb-0" id="greeting"></p>
+          </div>
+          <a class="btn btn-primary" href="events.html"><i class="bi bi-plus-lg me-1"></i>Найти мероприятие</a>
+        </div>
+      </div>
+    </header>
+
+    <div class="container">
+      <div class="row g-3 mb-4" id="summaryCards"></div>
+
+      <ul class="nav nav-pills nav-pills-ce gap-2 mb-4 flex-nowrap overflow-auto pb-1" id="myTabs" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button class="nav-link active text-nowrap" id="upcomingTab" data-bs-toggle="pill" data-bs-target="#upcomingPane" type="button" role="tab" aria-controls="upcomingPane" aria-selected="true">
+            <i class="bi bi-calendar-check me-1"></i>Предстоящие
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button class="nav-link text-nowrap" id="historyTab" data-bs-toggle="pill" data-bs-target="#historyPane" type="button" role="tab" aria-controls="historyPane" aria-selected="false">
+            <i class="bi bi-clock-history me-1"></i>История посещений
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button class="nav-link text-nowrap" id="calendarTab" data-bs-toggle="pill" data-bs-target="#calendarPane" type="button" role="tab" aria-controls="calendarPane" aria-selected="false">
+            <i class="bi bi-calendar3 me-1"></i>Календарь
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button class="nav-link text-nowrap" id="favoritesTab" data-bs-toggle="pill" data-bs-target="#favoritesPane" type="button" role="tab" aria-controls="favoritesPane" aria-selected="false">
+            <i class="bi bi-heart me-1"></i>Избранное
+          </button>
+        </li>
+      </ul>
+
+      <div class="tab-content">
+        <section class="tab-pane fade show active" id="upcomingPane" role="tabpanel" aria-labelledby="upcomingTab" tabindex="0">
+          <div class="vstack gap-3" id="upcomingList"></div>
+        </section>
+        <section class="tab-pane fade" id="historyPane" role="tabpanel" aria-labelledby="historyTab" tabindex="0">
+          <div class="vstack gap-3" id="historyList"></div>
+        </section>
+        <section class="tab-pane fade" id="calendarPane" role="tabpanel" aria-labelledby="calendarTab" tabindex="0">
+          <div class="card info-card shadow-sm">
+            <div class="card-body p-3 p-md-4">
+              <div class="d-flex justify-content-between align-items-center mb-3">
+                <button class="btn btn-light" type="button" id="prevMonth" aria-label="Предыдущий месяц"><i class="bi bi-chevron-left"></i></button>
+                <h2 class="h5 fw-bold mb-0 text-capitalize" id="calendarTitle"></h2>
+                <button class="btn btn-light" type="button" id="nextMonth" aria-label="Следующий месяц"><i class="bi bi-chevron-right"></i></button>
+              </div>
+              <div class="calendar" id="calendarGrid"></div>
+              <div class="vstack gap-2 mt-3 d-md-none" id="calendarMobileList"></div>
+            </div>
+          </div>
+        </section>
+        <section class="tab-pane fade" id="favoritesPane" role="tabpanel" aria-labelledby="favoritesTab" tabindex="0">
+          <div class="row g-4" id="favoritesGrid"></div>
+        </section>
+      </div>
+    </div>
+  </main>
+
+  <!-- QR-код -->
+  <div class="modal fade" id="qrModal" tabindex="-1" aria-labelledby="qrModalTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content border-0 rounded-4">
+        <div class="modal-header border-0 pb-0">
+          <h2 class="modal-title h5 fw-bold" id="qrModalTitle">QR-код для входа</h2>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+        </div>
+        <div class="modal-body text-center p-4" id="qrModalBody"></div>
+      </div>
+    </div>
+  </div>
+
+  <div id="appFooter"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script type="module" src="js/pages/my-events.js"></script>
+</body>
+</html>
