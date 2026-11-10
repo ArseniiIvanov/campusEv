@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="ru" data-bs-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#2a2e35">
+  <title>Вход — CampusEvents</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><rect width='16' height='16' rx='4' fill='%233b6fd8'/><text x='8' y='12' font-size='10' text-anchor='middle' fill='white'>C</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+  <link href="css/styles.css" rel="stylesheet">
+</head>
+<body>
+  <div id="appHeader"></div>
+
+  <main class="auth-wrapper d-flex align-items-center py-5">
+    <div class="container">
+      <div class="card auth-card shadow mx-auto">
+        <div class="card-body p-4 p-md-5">
+          <div class="text-center mb-4">
+            <span class="brand-logo mb-2" style="width:3rem;height:3rem;font-size:1.4rem"><i class="bi bi-calendar2-heart"></i></span>
+            <h1 class="h4 fw-bold mb-1">Добро пожаловать</h1>
+            <p class="text-body-secondary small mb-0">Войдите, чтобы записываться на мероприятия</p>
+          </div>
+
+          <ul class="nav nav-pills nav-pills-ce nav-justified mb-4 bg-body-tertiary rounded-pill p-1" role="tablist">
+            <li class="nav-item" role="presentation">
+              <button class="nav-link active" id="loginTab" data-bs-toggle="pill" data-bs-target="#loginPane" type="button" role="tab" aria-controls="loginPane" aria-selected="true">Вход</button>
+            </li>
+            <li class="nav-item" role="presentation">
+              <button class="nav-link" id="registerTab" data-bs-toggle="pill" data-bs-target="#registerPane" type="button" role="tab" aria-controls="registerPane" aria-selected="false">Регистрация</button>
+            </li>
+          </ul>
+
+          <div class="alert alert-danger d-none small" role="alert" id="authError"></div>
+
+          <div class="tab-content">
+            <div class="tab-pane fade show active" id="loginPane" role="tabpanel" aria-labelledby="loginTab" tabindex="0">
+              <form id="loginForm" novalidate>
+                <div class="form-floating mb-3">
+                  <input class="form-control" type="email" id="loginEmail" name="email" placeholder="email" autocomplete="username" required>
+                  <label for="loginEmail">Email</label>
+                  <div class="invalid-feedback">Введите email</div>
+                </div>
+                <div class="form-floating mb-3">
+                  <input class="form-control" type="password" id="loginPassword" name="password" placeholder="Пароль" autocomplete="current-password" required>
+                  <label for="loginPassword">Пароль</label>
+                  <div class="invalid-feedback">Введите пароль</div>
+                </div>
+                <button class="btn btn-primary btn-lg w-100" type="submit">Войти</button>
+              </form>
+
+              <div class="demo-accounts mt-4">
+                <div class="small text-body-secondary text-center mb-2">Демо-аккаунты</div>
+                <div class="d-flex gap-2">
+                  <button class="btn btn-outline-primary flex-fill" type="button" data-demo="student@campus.test"><i class="bi bi-mortarboard me-1"></i>Студент</button>
+                  <button class="btn btn-outline-primary flex-fill" type="button" data-demo="organizer@campus.test"><i class="bi bi-person-badge me-1"></i>Организатор</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="tab-pane fade" id="registerPane" role="tabpanel" aria-labelledby="registerTab" tabindex="0">
+              <form id="registerForm" novalidate>
+                <div class="form-floating mb-3">
+                  <input class="form-control" type="text" id="regName" name="full_name" placeholder="ФИО" autocomplete="name" minlength="2" required>
+                  <label for="regName">Имя и фамилия</label>
+                  <div class="invalid-feedback">Укажите имя</div>
+                </div>
+                <div class="form-floating mb-3">
+                  <input class="form-control" type="email" id="regEmail" name="email" placeholder="email" autocomplete="email" required>
+                  <label for="regEmail">Email</label>
+                  <div class="invalid-feedback">Введите корректный email</div>
+                </div>
+                <div class="row g-2 mb-3">
+                  <div class="col-7">
+                    <div class="form-floating">
+                      <select class="form-select" id="regFaculty" name="faculty_id">
+                        <option value="">Не выбран</option>
+                      </select>
+                      <label for="regFaculty">Институт</label>
+                    </div>
+                  </div>
+                  <div class="col-5">
+                    <div class="form-floating">
+                      <input class="form-control" type="text" id="regGroup" name="student_group" placeholder="Группа" maxlength="50">
+                      <label for="regGroup">Группа</label>
+                    </div>
+                  </div>
+                </div>
+                <div class="form-floating mb-3">
+                  <input class="form-control" type="password" id="regPassword" name="password" placeholder="Пароль" autocomplete="new-password" minlength="6" required>
+                  <label for="regPassword">Пароль (от 6 символов)</label>
+                  <div class="invalid-feedback">Минимум 6 символов</div>
+                </div>
+                <button class="btn btn-primary btn-lg w-100" type="submit">Создать аккаунт</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <div id="appFooter"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script type="module" src="js/pages/login.js"></script>
+</body>
+</html>
