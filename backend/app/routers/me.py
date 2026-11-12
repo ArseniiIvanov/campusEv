@@ -7,7 +7,7 @@ from fastapi import APIRouter, Depends, HTTPException, Query, Response, status
 from sqlalchemy import func, select, update
 from sqlalchemy.orm import Session, selectinload
 
-from ... import schemas
+from .. import schemas
 from ..auth import get_current_user
 from ..database import get_db
 from ..models import Event, EventTag, Favorite, Notification, Registration, RegistrationStatus, Review, User

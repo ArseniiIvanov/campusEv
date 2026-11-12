@@ -1,0 +1,5 @@
+fastapi[standard]>=0.115
+SQLAlchemy>=2.0,<2.1  # в 2.1 обязательны C-расширения, которые блокируются на части ПК с Windows
+PyJWT>=2.8
+qrcode>=7.4
+pillow>=10

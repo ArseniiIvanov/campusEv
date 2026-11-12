@@ -1,10 +1,3 @@
-"""Демо-данные. Создаются при первом запуске, если база пуста.
-
-Демо-аккаунты (пароль у всех — campus123):
-  student@campus.test    — студент
-  organizer@campus.test  — организатор
-  admin@campus.test      — администратор
-"""
 import random
 from datetime import datetime, timedelta
 
@@ -34,12 +27,19 @@ from .services import new_qr_token
 
 DEMO_PASSWORD = "campus123"
 
+# Институты УрФУ: (полное название, сокращение, префикс учебных групп для демо-студентов).
+# Порядок важен: индексы 0–4 используются в описаниях мероприятий ниже.
 FACULTIES = [
-    ("Институт информационных технологий", "ИИТ"),
-    ("Институт экономики и управления", "ИЭУ"),
-    ("Институт физики и математики", "ИФМ"),
-    ("Гуманитарный институт", "ГИ"),
-    ("Институт физической культуры и спорта", "ИФКС"),
+    ("Институт радиоэлектроники и информационных технологий — РтФ", "ИРИТ-РтФ", "РИ"),
+    ("Институт экономики и управления", "ИнЭУ", "ЭУ"),
+    ("Институт естественных наук и математики", "ИЕНиМ", "МЕН"),
+    ("Уральский гуманитарный институт", "УГИ", "ГИ"),
+    ("Институт физической культуры, спорта и молодёжной политики", "ИФКСиМП", "ФК"),
+    ("Уральский энергетический институт", "УралЭНИН", "ЭН"),
+    ("Институт новых материалов и технологий", "ИНМиТ", "НМ"),
+    ("Физико-технологический институт", "ФТИ", "ФТ"),
+    ("Химико-технологический институт", "ХТИ", "ХТ"),
+    ("Институт строительства и архитектуры", "ИСА", "СТ"),
 ]
 
 CATEGORIES = [
@@ -53,9 +53,9 @@ CATEGORIES = [
 
 VENUES = [
     ("Актовый зал", "Главный корпус", None, "ул. Университетская, 1", 400),
-    ("Аудитория 305", "Корпус ИИТ", "305", "ул. Университетская, 3", 60),
+    ("Аудитория 305", "Корпус ИРИТ-РтФ", "305", "ул. Университетская, 3", 60),
     ("Коворкинг «Точка кипения»", "Библиотека", "2 этаж", "ул. Студенческая, 7", 120),
-    ("Конференц-зал", "Корпус ИЭУ", "101", "пр. Науки, 12", 150),
+    ("Конференц-зал", "Корпус ИнЭУ", "101", "пр. Науки, 12", 150),
     ("Стадион «Буревестник»", "Спорткомплекс", None, "ул. Спортивная, 5", 1000),
     ("Малый зал ДК", "Дом культуры", None, "ул. Студенческая, 9", 200),
 ]
@@ -91,13 +91,14 @@ def seed(db: Session) -> None:
     today = datetime.now().replace(second=0, microsecond=0)
     pwd = hash_password(DEMO_PASSWORD)
 
-    faculties = [Faculty(name=n, short_name=s) for n, s in FACULTIES]
+    faculties = [Faculty(name=n, short_name=s) for n, s, _ in FACULTIES]
+    group_prefix = {s: p for _, s, p in FACULTIES}
     categories = {slug: Category(name=n, slug=slug, icon=i, color=c) for n, slug, i, c in CATEGORIES}
     venues = [Venue(name=n, building=b, room=r, address=a, capacity=c) for n, b, r, a, c in VENUES]
     db.add_all(faculties + list(categories.values()) + venues)
 
-    student = User(email="student@campus.test", password_hash=pwd, full_name="Анна Смирнова",
-                   role=UserRole.student, faculty=faculties[0], student_group="ИТ-21")
+    student = User(email="student@campus.test", password_hash=pwd, full_name="Иванов Арсений Сергеевич",
+                   role=UserRole.student, faculty=faculties[0], student_group="РИ-430948")
     organizer = User(email="organizer@campus.test", password_hash=pwd, full_name="Павел Орлов",
                      role=UserRole.organizer, faculty=faculties[0])
     organizer2 = User(email="culture@campus.test", password_hash=pwd, full_name="Ольга Белова",
@@ -112,7 +113,7 @@ def seed(db: Session) -> None:
         fac = rnd.choice(faculties)
         students.append(User(
             email=f"student{i + 1}@campus.test", password_hash=pwd, full_name=f"{first} {last}",
-            role=UserRole.student, faculty=fac, student_group=f"{fac.short_name}-{rnd.randint(20, 24)}",
+            role=UserRole.student, faculty=fac, student_group=f"{group_prefix[fac.short_name]}-{rnd.randint(1, 4)}{rnd.randint(30, 39)}{rnd.randint(900, 999)}",
         ))
     db.add_all(students)
 
@@ -238,7 +239,7 @@ def seed(db: Session) -> None:
                        created_at=past_ev.start_at - timedelta(days=5))
     reg.check_in = CheckIn(checked_by_id=organizer.id, checked_at=past_ev.start_at - timedelta(minutes=5))
     db.add(reg)
-    db.add(Review(event=past_ev, user=student, rating=5, comment="Наконец-то поняла, что такое кубит!",
+    db.add(Review(event=past_ev, user=student, rating=5, comment="Наконец-то понял, что такое кубит!",
                   created_at=past_ev.end_at + timedelta(hours=3)))
 
     past_ev2 = by_title["Осенний бал"]
